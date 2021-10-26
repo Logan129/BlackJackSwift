@@ -1,0 +1,1077 @@
+//  gameScreen.swift
+//  BlackJackFinal
+//
+//  Created by Logan Griglione on 9/29/21.
+//
+
+import UIKit
+
+class gameScreen: UIViewController {
+    var suit = 0
+    var card = 0
+    var userChipAmount = 300
+    var checkUser = true
+    var randSymbol = Int.random(in: 1...4)
+    var randCard = Int.random(in: 1...13)
+    var labelFinder = 1
+    // 1 hearts 2 spades 3 diamonds 4 clubs
+    
+    var hearts: [Int] = []
+    var spades: [Int] = []
+    var diamonds: [Int] = []
+    var clubs: [Int] = []
+    var starterHands: [Int] = []
+    func drawCardSuit()-> Int{
+    suit = randSymbol
+    randSymbol = Int.random(in: 1...4)
+        return suit
+    }
+    func drawCardNumber()-> Int{
+        card = randCard
+        randCard = Int.random(in: 1...13)
+        return card
+    }
+    
+    
+    
+    func startUp(){
+        userScore = 0
+        houseScore = 0
+        houseCard2.image = UIImage(named:"Back Of Card")
+        showBeginning()
+        for cards in 1...4{
+            suitType = drawCardSuit()
+            cardType = drawCardNumber()
+        check = checkDuplicate(suit: suitType, card1: cardType)
+            
+            if (check == false){
+            cardType = drawCardNumber()
+            check = checkDuplicate(suit: suitType, card1: cardType)
+            if (check == false){
+                cardType = drawCardNumber()
+                
+            }
+            }
+            labelFinder(suit: suitType, card1: cardType)
+            addToArray(suit: suitType, card1: cardType)
+            labelFinder = labelFinder + 1
+            if (cards==3){
+                userCheck = false
+                houseCheck = true
+            }
+            if (userCheck == true){
+                if (faceCheck1Button(card1: cardType) == true){
+                    if (flagAce == true){
+                        
+                        userScore += 11
+                       
+                        }
+                    
+                    else{
+                    userScore += 10
+                    }
+                }
+                else{
+                userScore += cardType
+                
+                }}
+            if (houseCheck == true){
+                
+                if (faceCheck2Button(card1: cardType) == true){
+                    if (flagAceHouse == true){
+                        
+                        houseScore += 11
+                        if (houseScore > 21 ){
+                            houseScore = 12
+                        }
+                        cardHidden = 11
+                        }
+                    else{
+                    houseScore += 10
+                        cardHidden = 10
+                    }
+                }
+                else{
+                houseScore += cardType
+                
+                cardHidden = cardType
+                    
+              //  houseCheck = false
+                }
+                if (userScore == 21){
+                    if (houseScore == 21){
+                        userScore1.text = "Tie!"
+                        drawCardButton.isHidden = true
+                        standButton.isHidden = true
+                        continueButton.isHidden = false
+                    }
+                    else{
+                    userScore1.text = "Black Jack!"
+                    drawCardButton.isHidden = true
+                    standButton.isHidden = true
+                    continueButton.isHidden = false
+                    }}
+                
+
+        }
+            
+                    }
+        houseScore1.text = "The House Score is: " + String(houseScore - cardHidden)
+        
+        userScore1.text = "Your score is: " + String(userScore)
+    }
+    func endBetScreen(){
+        bet10Button.isHidden = true
+        bet50Button.isHidden = true
+        bet100Button.isHidden = true
+        chipAmtLabel.isHidden = true
+        pokerChip.isHidden = true
+        youHaveLabel.isHidden = true
+    }
+    func resetGame(){
+         hearts = []
+         clubs = []
+         diamonds = []
+         spades = []
+        flagAce = false
+        flagAceHouse = false
+        playAgainButton.isHidden = true
+        userScore1.isHidden = true
+        houseScore1.isHidden = true
+        youWinLabel.isHidden = true
+            userCardLabel1.isHidden = true
+            userCardLabel2.isHidden = true
+        userCardLabel3.isHidden = true
+        userCardLabel4.isHidden = true
+        userCardLabel5.isHidden = true
+        userCardLabel6.isHidden = true
+        userCardLabel7.isHidden = true
+            houseCardLabel1.isHidden = true
+        houseCardLabel2.isHidden = true
+        houseCardLabel3.isHidden = true
+        houseCardLabel4.isHidden = true
+        houseCardLabel5.isHidden = true
+        houseCardLabel6.isHidden = true
+        houseCardLabel7.isHidden = true
+            
+            houseCard1.isHidden = true
+            houseCard2.isHidden = true
+        houseCard3.isHidden = true
+        houseCard4.isHidden = true
+        houseCard5.isHidden = true
+        houseCard6.isHidden = true
+        houseCard7.isHidden = true
+            userCard1.isHidden = true
+            userCard2.isHidden = true
+        userCard3.isHidden = true
+        userCard4.isHidden = true
+        userCard5.isHidden = true
+        userCard6.isHidden = true
+        userCard7.isHidden = true
+        labelFinder = 1
+        userCardLocation = 0
+        houseCardLocation = 1
+        suitType = 0
+        cardType = 0
+        houseCheck = false
+        showHouse2Card = false
+        cardHidden = 0
+        userScore = 0
+        houseScore = 0
+        check = true
+        userCheck = true
+        houseTrueScore = 0
+        userTrueScore = 0
+        userBust = false
+        cardLoc = 3
+        labelFinderHouse1 = 0
+        userCardLoc1 = 3
+        labelFinderUser1 = 0
+        houseScore1.text = ""
+        userScore1.text = ""
+        aceCardInPlay = false
+        
+        aceSubScore = false
+        
+    }
+    func checkDuplicate(suit: Int, card1: Int)-> Bool{
+        if (suit == 1){
+        if hearts.contains(card1){
+            return false
+        }
+        }
+        else if (suit == 2){
+        if spades.contains(card1){
+            return false
+        }
+        }
+        else if (suit == 3){
+            if diamonds.contains(card1){
+                return false
+            }
+            }
+        else if (suit == 4){
+        if clubs.contains(card1){
+            return false
+        }
+        }
+            return true
+    }
+    func addToArray(suit: Int, card1: Int){
+        if(suit == 1){
+            hearts.append(card1)
+        }
+        if(suit == 2){
+            clubs.append(card1)
+        }
+        if(suit == 3){
+            diamonds.append(card1)
+        }
+        if(suit == 4){
+            spades.append(card1)
+        }
+    }
+    func suitFinderUser(suit: Int, userCard: Int){
+        if(suit == 1){
+            if (userCard == 1){
+                userCard1.image = UIImage(named:"Hearts")
+                
+            }
+            else if (userCard == 2){
+                userCard2.image = UIImage(named:"Hearts")
+            }
+            else if (userCard == 3){
+                userCard3.image = UIImage(named:"Hearts")
+            }
+            else if (userCard == 4){
+                userCard4.image = UIImage(named:"Hearts")
+            }
+            else if (userCard == 5){
+                userCard5.image = UIImage(named:"Hearts")
+            }
+            else if (userCard == 6){
+                userCard6.image = UIImage(named:"Hearts")
+            }
+            else if (userCard == 7){
+                userCard7.image = UIImage(named:"Hearts")
+            }
+           
+        }
+        if(suit == 2){
+            if (userCard == 1){
+                userCard1.image = UIImage(named:"Spades")
+                
+            }
+            else if (userCard == 2){
+                userCard2.image = UIImage(named:"Spades")
+            }
+            else if (userCard == 3){
+                userCard3.image = UIImage(named:"Spades")
+            }
+            else if (userCard == 4){
+                userCard4.image = UIImage(named:"Spades")
+            }
+            else if (userCard == 5){
+                userCard5.image = UIImage(named:"Spades")
+            }
+            else if (userCard == 6){
+                userCard6.image = UIImage(named:"Spades")
+            }
+            else if (userCard == 7){
+                userCard7.image = UIImage(named:"Spades")
+            }
+        }
+        if(suit == 3){
+            if (userCard == 1){
+                userCard1.image = UIImage(named:"Diamonds")
+                
+            }
+            else if (userCard == 2){
+                userCard2.image = UIImage(named:"Diamonds")
+            }
+            else if (userCard == 3){
+                userCard3.image = UIImage(named:"Diamonds")
+            }
+            else if (userCard == 4){
+                userCard4.image = UIImage(named:"Diamonds")
+            }
+            else if (userCard == 5){
+                userCard5.image = UIImage(named:"Diamonds")
+            }
+            else if (userCard == 6){
+                userCard6.image = UIImage(named:"Diamonds")
+            }
+            else if (userCard == 7){
+                userCard7.image = UIImage(named:"Diamonds")
+            }
+
+            
+        }
+        if(suit == 4){
+            if (userCard == 1){
+                userCard1.image = UIImage(named: "Clubs")
+                
+            }
+            else if (userCard == 2){
+                userCard2.image = UIImage(named: "Clubs")
+            }
+            else if (userCard == 3){
+                userCard3.image = UIImage(named: "Clubs")
+            }
+            else if (userCard == 4){
+                userCard4.image = UIImage(named: "Clubs")
+            }
+            else if (userCard == 5){
+                userCard5.image = UIImage(named:"Clubs")
+            }
+            else if (userCard == 6){
+                userCard6.image = UIImage(named:"Clubs")
+            }
+            else if (userCard == 7){
+                userCard7.image = UIImage(named:"Clubs")
+            }
+            
+        }
+        
+    }
+    func showCard(houseCardLoc: Int){
+        if (houseCardLoc == 3){
+            houseCard3.isHidden = false
+            houseCardLabel3.isHidden = false
+        }
+        if (houseCardLoc == 4){
+            houseCard4.isHidden = false
+            houseCardLabel4.isHidden = false
+        }
+        if (houseCardLoc == 5){
+            houseCard5.isHidden = false
+            houseCardLabel5.isHidden = false
+        }
+        if (houseCardLoc == 6){
+            houseCard6.isHidden = false
+            houseCardLabel6.isHidden = false
+        }
+        if (houseCardLoc == 7){
+            houseCard7.isHidden = false
+            houseCardLabel7.isHidden = false
+        }
+    }
+    var cardLoc = 3
+    var labelFinderHouse1 = 0
+    func labelFinderHouse(card1: Int, suit: Int) {
+        if (labelFinderHouse1 == 0){
+            
+            houseCardLocation = 3
+            
+            if (checkFaceCard(card1: card1, labelLoc: houseCardLabel3) == false ){
+                houseCardLabel3.text = String(card1)
+            }
+                suitFinderHouse(suit: suit, houseCard: houseCardLocation)}
+        if (labelFinderHouse1 == 1){
+            
+            houseCardLocation = 4
+           
+            if (checkFaceCard(card1: card1, labelLoc: houseCardLabel4) == false){
+                houseCardLabel4.text = String(card1)
+            }
+            suitFinderHouse(suit: suit, houseCard: houseCardLocation)}
+        if(labelFinderHouse1 == 2){
+            houseCardLocation = 5
+            
+            if (checkFaceCard(card1: card1, labelLoc: houseCardLabel5) == false){
+                houseCardLabel5.text = String(card1)
+            }
+            suitFinderHouse(suit: suit, houseCard: houseCardLocation)
+        }
+        if(labelFinderHouse1 == 3){
+            houseCardLocation = 6
+            
+            if (checkFaceCard(card1: card1, labelLoc: houseCardLabel6) == false){
+                houseCardLabel6.text = String(card1)
+            }
+            suitFinderHouse(suit: suit, houseCard: houseCardLocation)
+        }
+        if(labelFinderHouse1 == 4){
+            houseCardLocation = 7
+            
+            if (checkFaceCard(card1: card1, labelLoc: houseCardLabel7) == false){
+                houseCardLabel7.text = String(card1)
+            }
+            suitFinderHouse(suit: suit, houseCard: houseCardLocation)
+        }
+        showCard(houseCardLoc: cardLoc)
+        labelFinderHouse1 += 1
+        
+    }
+    func showCard2(userCardLoc: Int){
+        if (userCardLoc == 3){
+            userCard3.isHidden = false
+            userCardLabel3.isHidden = false
+        }
+        if (userCardLoc == 4){
+            userCard4.isHidden = false
+            userCardLabel4.isHidden = false
+        }
+        if (userCardLoc == 5){
+            userCard5.isHidden = false
+            userCardLabel5.isHidden = false
+        }
+        if (userCardLoc == 6){
+            userCard6.isHidden = false
+            userCardLabel6.isHidden = false
+        }
+        if (userCardLoc == 7){
+            userCard7.isHidden = false
+            userCardLabel7.isHidden = false
+        }
+    }
+    var userCardLoc1 = 3
+    var labelFinderUser1 = 0
+    func labelFinderUser(card1: Int, suit: Int) {
+        if (labelFinderUser1 == 0){
+            
+            userCardLocation = 3
+            if (checkFaceCard(card1: card1, labelLoc: userCardLabel3) == false){
+                userCardLabel3.text = String(card1)
+            }
+                suitFinderUser(suit: suit, userCard: userCardLocation)}
+        if (labelFinderUser1 == 1){
+            
+            userCardLocation = 4
+            if (checkFaceCard(card1: card1, labelLoc: userCardLabel4) == false){
+                userCardLabel4.text = String(card1)
+            }
+         suitFinderUser(suit: suit, userCard: userCardLocation)}
+        if (labelFinderUser1 == 2){
+            
+            userCardLocation = 5
+            if (checkFaceCard(card1: card1, labelLoc: userCardLabel5) == false){
+                userCardLabel5.text = String(card1)
+            }
+         suitFinderUser(suit: suit, userCard: userCardLocation)}
+        if (labelFinderUser1 == 3){
+            
+            userCardLocation = 6
+            if (checkFaceCard(card1: card1, labelLoc: userCardLabel6) == false){
+                userCardLabel6.text = String(card1)
+            }
+         suitFinderUser(suit: suit, userCard: userCardLocation)}
+        if (labelFinderUser1 == 4){
+            
+            userCardLocation = 7
+            if (checkFaceCard(card1: card1, labelLoc: userCardLabel7) == false){
+                userCardLabel7.text = String(card1)
+            }
+         suitFinderUser(suit: suit, userCard: userCardLocation)}
+        showCard2(userCardLoc: userCardLoc1)
+        userCardLoc1 += 1
+        labelFinderUser1 += 1
+    }
+    func houseUi(){
+        if(houseScore < 17){
+            suitType = drawCardSuit()
+            cardType = drawCardNumber()
+        check = checkDuplicate(suit: suitType, card1: cardType)
+        if (check == false){
+            cardType = drawCardNumber()
+            
+        }
+        
+            labelFinderHouse(card1: cardType, suit: suitType)
+            addToArray(suit: suitType, card1: cardType)
+        
+        if (faceCheck2Button(card1: cardType) == true){
+            houseScore += 10
+        }
+        else{
+        houseScore += cardType
+        }
+        suitFinderHouse(suit: suitType, houseCard: cardLoc)
+        showCard(houseCardLoc: cardLoc)
+        cardLoc += 1
+        
+        }
+    }
+    func houseAI(){
+        while (houseScore < 17 && userBust == false){
+            houseUi()
+        }
+       
+    }
+    
+    func suitFinderHouse(suit: Int, houseCard: Int){
+        if(suit == 1){
+            if (houseCard == 1){
+                houseCard1.image = UIImage(named:"Hearts")
+                
+            }
+            else if (houseCard == 2 && showHouse2Card == true){
+                houseCard2.image = UIImage(named:"Hearts")
+            }
+            else if (houseCard == 3){
+                houseCard3.image = UIImage(named:"Hearts")
+            }
+            else if (houseCard == 4){
+                houseCard4.image = UIImage(named:"Hearts")
+            }
+            else if (houseCard == 5){
+                houseCard5.image = UIImage(named:"Hearts")
+            }
+            else if (houseCard == 6){
+                houseCard6.image = UIImage(named:"Hearts")
+            }
+            else if (houseCard == 7){
+                houseCard7.image = UIImage(named:"Hearts")
+            }
+           
+        }
+        if(suit == 2){
+            if (houseCard == 1){
+                houseCard1.image = UIImage(named:"Spades")
+                
+            }
+            else if (houseCard == 2 && showHouse2Card == true){
+                houseCard2.image = UIImage(named:"Spades")
+            }
+            else if (houseCard == 3){
+                houseCard3.image = UIImage(named:"Spades")
+            }
+            else if (houseCard == 4){
+                houseCard4.image = UIImage(named:"Spades")
+            }
+            else if (houseCard == 5){
+                houseCard5.image = UIImage(named:"Spades")
+            }
+            else if (houseCard == 6){
+                houseCard6.image = UIImage(named:"Spades")
+            }
+            else if (houseCard == 7){
+                houseCard7.image = UIImage(named:"Spades")
+            }
+        }
+        if(suit == 3){
+            if (houseCard == 1){
+                houseCard1.image = UIImage(named:"Diamonds")
+                
+            }
+            else if (houseCard == 2 && showHouse2Card == true){
+                houseCard2.image = UIImage(named:"Diamonds")
+            }
+            else if (houseCard == 3){
+                houseCard3.image = UIImage(named:"Diamonds")
+            }
+            else if (houseCard == 4){
+                houseCard4.image = UIImage(named:"Diamonds")
+            }
+            else if (houseCard == 5){
+                houseCard5.image = UIImage(named:"Diamonds")
+            }
+            else if (houseCard == 6){
+                houseCard6.image = UIImage(named:"Diamonds")
+            }
+            else if (houseCard == 7){
+                houseCard7.image = UIImage(named:"Diamonds")
+            }
+
+            
+        }
+        if(suit == 4){
+            if (houseCard == 1){
+                houseCard1.image = UIImage(named: "Clubs")
+                
+            }
+            else if (houseCard == 2 && showHouse2Card == true){
+                houseCard2.image = UIImage(named: "Clubs")
+            }
+            else if (houseCard == 3){
+                houseCard3.image = UIImage(named: "Clubs")
+            }
+            else if (houseCard == 4){
+                houseCard4.image = UIImage(named: "Clubs")
+            }
+            else if (houseCard == 5){
+                houseCard5.image = UIImage(named:"Clubs")
+            }
+            else if (houseCard == 6){
+                houseCard6.image = UIImage(named:"Clubs")
+            }
+            else if (houseCard == 7){
+                houseCard7.image = UIImage(named:"Clubs")
+            }
+        }
+        
+    }
+    var flagAce = false
+
+    func faceCheck1Button(card1: Int)-> Bool {
+        if (card1 == 1){
+            aceCardInPlay = true
+            flagAce = true
+            return true
+        }
+        if (card1 == 11){
+            return true
+        }
+        if (card1 == 12){
+            return true
+        }
+        if (card1 == 13){
+           return true
+        }
+        return false
+    }
+    var flagAceHouse = false
+    func faceCheck2Button(card1: Int)-> Bool {
+        if (card1 == 1){
+            flagAceHouse = true
+
+            return true
+                    }
+        if (card1 == 11){
+            return true
+        }
+        if (card1 == 12){
+            return true
+        }
+        if (card1 == 13){
+           return true
+        }
+        return false
+    }
+    var flagFace = false
+    func faceCheck(card1: Int, labelLoc: UILabel) -> Bool{
+        if (card1 == 1){
+            labelLoc.text = "A"
+            return true
+        }
+        if (card1 == 11){
+            labelLoc.text = "J"
+            return true
+        }
+        if (card1 == 12){
+            labelLoc.text = "Q"
+            return true
+        }
+        if (card1 == 13){
+            labelLoc.text = "K"
+            return true
+        }
+       
+    return false
+        
+    }
+    var userScoreAceCard = 0
+    func aceCard(userScore: Int) -> Int{
+        userScoreAceCard = userScore
+        userScoreAceCard += 11
+        if (userScoreAceCard > 21){
+            userScoreAceCard -= 10
+            aceSubScore = true
+        }
+       flagAce = false
+        return userScoreAceCard
+    }
+    
+    
+    func labelFinder(suit: Int, card1: Int){
+        
+        
+        if (labelFinder == 1){
+            userCardLocation = 1
+            flagFace = faceCheck(card1: card1, labelLoc: userCardLabel1)
+            if (flagFace == false){
+                userCardLabel1.text = String(card1)
+            }
+            suitFinderUser(suit: suit, userCard: userCardLocation)
+            flagFace = false
+        }
+        else if (labelFinder == 2){
+            userCardLocation = 2
+            flagFace = faceCheck(card1: card1, labelLoc: userCardLabel2)
+            if (flagFace == false){
+                userCardLabel2.text = String(card1)
+            }
+            suitFinderUser(suit: suit, userCard: userCardLocation)
+            flagFace = false
+        }
+        else if (labelFinder == 3){
+            houseCardLocation = 1
+            flagFace = faceCheck(card1: card1, labelLoc: houseCardLabel1)
+            if (flagFace == false){
+                houseCardLabel1.text = String(card1)
+            }
+            suitFinderHouse(suit: suit, houseCard: houseCardLocation)
+            flagFace = false
+        }
+        else if (labelFinder == 4){
+            
+            houseCardLocation = 2
+            flagFace = faceCheck(card1: card1, labelLoc: houseCardLabel2)
+            if (flagFace == false ){
+                houseCardLabel2.text = String(card1)
+            }
+                suitFinderHouse(suit: suit, houseCard: houseCardLocation)}
+       
+        
+    }
+    func checkFaceCard(card1: Int, labelLoc: UILabel) -> Bool{
+        if (card1 == 1){
+            labelLoc.text = "A"
+            return true
+        }
+        if (card1 == 11){
+            labelLoc.text = "J"
+            return true
+        }
+        if (card1 == 12){
+            labelLoc.text = "Q"
+            return true
+        }
+        if (card1 == 13){
+            labelLoc.text = "K"
+            return true
+        }
+        return false
+    }
+    func showBeginning(){
+        drawCardButton.isHidden = false
+        standButton.isHidden = false
+        backOfCard.isHidden = false
+        userScore1.isHidden = false
+        houseScore1.isHidden = false
+            userCardLabel1.isHidden = false
+            userCardLabel2.isHidden = false
+            houseCardLabel1.isHidden = false
+            beginningButton.isHidden = true
+            houseCard1.isHidden = false
+            houseCard2.isHidden = false
+            userCard1.isHidden = false
+            userCard2.isHidden = false
+    }
+    
+
+    
+    @IBOutlet weak var bet10Button: UIButton!
+    @IBOutlet weak var bet50Button: UIButton!
+    @IBOutlet weak var bet100Button: UIButton!
+    @IBOutlet weak var continueButton: UIButton!
+    @IBOutlet weak var playAgainButton: UIButton!
+    @IBOutlet weak var notEnoughChipsLabel: UILabel!
+    
+   
+    @IBOutlet weak var outOfChipsLabel: UILabel!
+    @IBOutlet weak var backOfCard: UIImageView!
+    @IBOutlet weak var userCardLabel1: UILabel!
+    @IBOutlet weak var userCardLabel2: UILabel!
+    @IBOutlet weak var userCardLabel3: UILabel!
+    @IBOutlet weak var userCardLabel4: UILabel!
+    @IBOutlet weak var userCardLabel5: UILabel!
+    @IBOutlet weak var userCardLabel6: UILabel!
+    @IBOutlet weak var userCardLabel7: UILabel!
+    @IBOutlet weak var houseCardLabel1: UILabel!
+    @IBOutlet weak var houseCardLabel2: UILabel!
+    @IBOutlet weak var houseCardLabel3: UILabel!
+    @IBOutlet weak var houseCardLabel4: UILabel!
+    @IBOutlet weak var houseCardLabel5: UILabel!
+    @IBOutlet weak var houseCardLabel6: UILabel!
+    @IBOutlet weak var houseCardLabel7: UILabel!
+    @IBOutlet weak var beginningButton: UIButton!
+    
+    @IBOutlet weak var youWinLabel: UILabel!
+    @IBOutlet weak var drawCardButton: UIButton!
+    @IBOutlet weak var standButton: UIButton!
+    @IBOutlet weak var houseCard1: UIImageView!
+    @IBOutlet weak var houseCard2: UIImageView!
+    @IBOutlet weak var houseCard3: UIImageView!
+    @IBOutlet weak var houseCard4: UIImageView!
+    @IBOutlet weak var houseCard5: UIImageView!
+    @IBOutlet weak var houseCard6: UIImageView!
+    
+    @IBOutlet weak var houseCard7: UIImageView!
+    
+    @IBOutlet weak var userCard1: UIImageView!
+    @IBOutlet weak var userCard2: UIImageView!
+    @IBOutlet weak var userCard3: UIImageView!
+    @IBOutlet weak var userCard4: UIImageView!
+    @IBOutlet weak var userCard5: UIImageView!
+    @IBOutlet weak var userCard6: UIImageView!
+    @IBOutlet weak var userCard7: UIImageView!
+    @IBOutlet weak var youHaveLabel: UILabel!
+    @IBOutlet weak var pokerChip: UIImageView!
+    @IBOutlet weak var chipAmtLabel: UILabel!
+    @IBOutlet weak var houseScore1: UILabel!
+    @IBOutlet weak var userScore1: UILabel!
+    var userCardLocation = 0
+    var houseCardLocation = 0
+    var suitType = 0
+    var cardType = 0
+    var houseCheck = false
+    var aceVal = 1
+    var aceCardInPlay = false
+    var showHouse2Card = false
+    var cardHidden = 0
+    var userScore = 0
+    var houseScore = 0
+    var check = true
+    var userCheck = true
+    var houseTrueScore = 0
+    var userTrueScore = 0
+    var userBust = false
+    var playAgain = false
+    @IBAction func beggingButton(_ sender: Any) {
+        chipAmtLabel.text = String(userChipAmount)
+        beginningButton.isHidden = true
+        bet10Button.isHidden = false
+        bet50Button.isHidden = false
+        bet100Button.isHidden = false
+        youHaveLabel.isHidden = false
+        chipAmtLabel.isHidden = false
+        pokerChip.isHidden = false
+       
+    }
+   
+    var aceSubScore = false
+    @IBAction func drawCardAction(_ sender: Any) {
+        suitType = drawCardSuit()
+        cardType = drawCardNumber()
+       
+    check = checkDuplicate(suit: suitType, card1: cardType)
+    if (check == false){
+        cardType = drawCardNumber()
+        
+    }
+    
+        labelFinderUser(card1: cardType, suit: suitType)
+        addToArray(suit: suitType, card1: cardType)
+    
+    if (faceCheck1Button(card1: cardType) == true){
+        if (flagAce == true){
+            userScore = aceCard(userScore: userScore)
+        }
+        else {
+            userScore += 10
+            }
+        
+    }
+    else{
+    userScore += cardType
+    }
+        if (aceSubScore == false){
+            
+        }
+        
+        if (aceCardInPlay == true && aceSubScore == false){
+            
+            if (userScore > 21){
+                userScore -= 10
+                aceSubScore = true
+            }
+            else{
+                userScore += 10
+            }}
+        userScore1.text = "Your score is: " + String(userScore)
+        if (userScore > 21){
+            userScore1.text = "You Busted! Your score is: " + String(userScore)
+            drawCardButton.isHidden = true
+            standButton.isHidden = true
+            continueButton.isHidden = false
+            userBust = true
+        }
+        else if (userScore == 21){
+            userScore1.text = "21!"
+            drawCardButton.isHidden = true
+            standButton.isHidden = true
+            continueButton.isHidden = false
+        }
+    }
+    @IBAction func standCardAction(_ sender: Any) {
+        standButton.isHidden = true
+        drawCardButton.isHidden = true
+        showHouse2Card = true
+        houseCardLabel2.isHidden = false
+        suitFinderHouse(suit: suitType, houseCard: 2)
+       
+        houseAI()
+        
+        
+        houseScore1.text = "The House Score is: " + String(houseScore)
+        if(houseScore < userScore){
+            
+            if (userScore > 21 ){
+                youWinLabel.isHidden = false
+                youWinLabel.text = "You Lose!"
+            }
+            else{
+                youWinLabel.isHidden = false
+                youWinLabel.text = "You Win!"
+                chipsBet *= 2
+                userChipAmount += chipsBet
+                
+            }
+        }
+        if(houseScore > userScore){
+            if (houseScore > 21 ){
+                youWinLabel.isHidden = false
+                youWinLabel.text = "House Busted! You Win!"
+                chipsBet *= 2
+                userChipAmount += chipsBet
+            }else{
+                youWinLabel.isHidden = false
+                youWinLabel.text = "You Lose!"
+            }
+        }
+        if(houseScore == userScore){
+            
+                youWinLabel.isHidden = false
+                youWinLabel.text = "Tie!"
+                userChipAmount += chipsBet
+        }
+        
+         
+    
+    playAgainButton.isHidden = false
+    }
+   
+    @IBAction func playAgainButton(_ sender: Any) {
+      playAgain = true
+        playAgainButton.isHidden = true
+        backOfCard.isHidden = true
+        resetGame()
+        if (userChipAmount > 0 ){
+            bet10Button.isHidden = false
+            bet50Button.isHidden = false
+            bet100Button.isHidden = false
+            youHaveLabel.isHidden = false
+            chipAmtLabel.isHidden = false
+            pokerChip.isHidden = false
+            chipAmtLabel.text = String(userChipAmount)
+        }
+       else
+        {
+            outOfChipsLabel.isHidden = false
+        }
+        
+    }
+    @IBAction func continueButton(_ sender: Any) {
+        showHouse2Card = true
+        playAgainButton.isHidden = false
+        houseCardLabel2.isHidden = false
+        suitFinderHouse(suit: suitType, houseCard: 2)
+        continueButton.isHidden = true
+        houseAI()
+        
+        
+        houseScore1.text = "The House Score is: " + String(houseScore)
+        if(houseScore < userScore){
+            
+            if (userScore > 21 ){
+                youWinLabel.isHidden = false
+                youWinLabel.text = "You Lose!"
+            }
+            else{
+                youWinLabel.isHidden = false
+                youWinLabel.text = "You Win!"
+                chipsBet *= 2
+                userChipAmount += chipsBet
+            }
+        }
+        if(houseScore > userScore){
+            if (houseScore > 21 ){
+                youWinLabel.isHidden = false
+                youWinLabel.text = "House Busted! You Win!"
+                chipsBet *= 2
+                userChipAmount += chipsBet
+            }else{
+                youWinLabel.isHidden = false
+                youWinLabel.text = "You Lose!"
+            }
+        }
+        if(houseScore == userScore){
+            
+                youWinLabel.isHidden = false
+                youWinLabel.text = "Tie!"
+            userChipAmount += chipsBet
+            
+        }
+    }
+    var chipsBet = 0
+    @IBAction func bet10(_ sender: Any) {
+        startUp()
+        endBetScreen()
+        userChipAmount -= 10
+        chipsBet = 10
+        
+        notEnoughChipsLabel.isHidden = true
+    }
+    @IBAction func bet50(_ sender: Any) {
+        if (userChipAmount<50){
+            notEnoughChipsLabel.isHidden = false
+        }
+        else{
+        startUp()
+        endBetScreen()
+        userChipAmount -= 50
+        chipsBet = 50
+           
+            notEnoughChipsLabel.isHidden = true
+        }
+    }
+    @IBAction func bet100(_ sender: Any) {
+        if (userChipAmount<100){
+            notEnoughChipsLabel.isHidden = false
+        }
+        else{
+        startUp()
+        endBetScreen()
+        userChipAmount -= 100
+        chipsBet = 100
+            
+            notEnoughChipsLabel.isHidden = true
+        }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        drawCardButton.layer.borderWidth = 3
+        drawCardButton.layer.borderColor = UIColor.black.cgColor
+        drawCardButton.layer.cornerCurve = .continuous
+        drawCardButton.layer.cornerRadius = 10.0
+        
+        standButton.layer.borderWidth = 3
+        standButton.layer.borderColor = UIColor.black.cgColor
+        standButton.layer.cornerCurve = .continuous
+        standButton.layer.cornerRadius = 10.0
+        
+        continueButton.layer.borderWidth = 3
+        continueButton.layer.borderColor = UIColor.black.cgColor
+        continueButton.layer.cornerCurve = .continuous
+        continueButton.layer.cornerRadius = 10.0
+        
+        beginningButton.layer.borderWidth = 3
+        beginningButton.layer.borderColor = UIColor.black.cgColor
+        beginningButton.layer.cornerCurve = .continuous
+        beginningButton.layer.cornerRadius = 10.0
+        
+        playAgainButton.layer.borderWidth = 3
+        playAgainButton.layer.borderColor = UIColor.black.cgColor
+        playAgainButton.layer.cornerCurve = .continuous
+        playAgainButton.layer.cornerRadius = 10.0
+        
+        bet10Button.layer.borderWidth = 3
+        bet10Button.layer.borderColor = UIColor.black.cgColor
+        bet10Button.layer.cornerCurve = .continuous
+        bet10Button.layer.cornerRadius = 10.0
+        
+        bet50Button.layer.borderWidth = 3
+        bet50Button.layer.borderColor = UIColor.black.cgColor
+        bet50Button.layer.cornerCurve = .continuous
+        bet50Button.layer.cornerRadius = 10.0
+        
+        bet100Button.layer.borderWidth = 3
+        bet100Button.layer.borderColor = UIColor.black.cgColor
+        bet100Button.layer.cornerCurve = .continuous
+        bet100Button.layer.cornerRadius = 10.0
+        // Do any additional setup after loading the view.
+    }
+}
+    
