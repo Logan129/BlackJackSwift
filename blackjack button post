@@ -1,0 +1,44 @@
+@IBAction func dealButton2(_ sender: Any) {
+        if(userChipAmount < chipsBet){
+            notEnoughChipsLabel.isHidden = false
+        }
+        else{
+            startUp()
+            endBetScreen()
+           
+        }
+        
+    }
+    
+        @IBAction func bet10(_ sender: Any) {
+            userChipAmount -= 10
+            if(userChipAmount < 0){
+                notEnoughChipsLabel.isHidden = false
+                userChipAmount += 10
+            } else{
+                chipsBet += 10
+                betLabel.text = "Bet: " + String(chipsBet)
+            }
+            
+        }
+        @IBAction func bet50(_ sender: Any) {
+            userChipAmount -= 50
+            if(userChipAmount < 0){
+                notEnoughChipsLabel.isHidden = false
+                userChipAmount += 50
+                
+            } else{
+                chipsBet += 50
+                betLabel.text = "Bet: " + String(chipsBet)
+            }
+        }
+        @IBAction func bet100(_ sender: Any) {
+            userChipAmount -= 100
+            if(userChipAmount < 0){
+                notEnoughChipsLabel.isHidden = false
+                userChipAmount += 100
+            } else{
+                chipsBet += 100
+            }
+        }
+        
